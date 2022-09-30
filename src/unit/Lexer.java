@@ -96,6 +96,7 @@ public class Lexer {
 				return tokens;
 			}
 		}
+		tokens.add(new Token(TokenName.END_OF_INPUT));
 		return tokens;
 	}
 }
