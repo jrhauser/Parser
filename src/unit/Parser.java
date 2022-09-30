@@ -94,7 +94,7 @@ public class Parser {
 	}
 	
 	private boolean expression() {
-		boolean value = boolean();
+		boolean value = myBoolean();
 		return value;
 	}
 
@@ -104,7 +104,7 @@ public class Parser {
 	}
 
 	private boolean literal() {
-		boolean value = tokens.element().value;
+		boolean value = true;
 		return value;
 	}
 }
