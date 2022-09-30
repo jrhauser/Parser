@@ -9,7 +9,7 @@ import framework.TokenName;
 
 public class Lexer {
 	public static void main(String[] args) {
-		String sentence = "^vEVAL letEVAL ' V Pv & ^";
+		String sentence = "eval 1?";
 		Queue<Token> tokens = new Lexer().tokenize(sentence);
 		while (!tokens.isEmpty())
 			System.out.println(tokens.remove());
@@ -18,7 +18,6 @@ public class Lexer {
 	public Queue<Token> tokenize(String input) {
 		Queue<Token> tokens = new LinkedList<Token>();
 
-		 int unexpected = -1;
 		for (int index = 0; index < input.length(); index++) {
 			if (Character.isWhitespace(input.charAt(index)))  {
 				continue;
@@ -51,8 +50,7 @@ public class Lexer {
 				}
 				else {
 					tokens.add(new Token(TokenName.UNEXPECTED_INPUT));
-					unexpected += 1;
-					break;
+					return tokens;
 				}			
 			}
 			else if (input.charAt(index) == '<') { 
@@ -62,8 +60,7 @@ public class Lexer {
 				}
 				else {
 					tokens.add(new Token(TokenName.UNEXPECTED_INPUT));
-					unexpected += 1;
-					break;
+					return tokens;
 				}
 			}
 			else if (input.charAt(index) == '1') {
@@ -96,12 +93,8 @@ public class Lexer {
 			}
 			else {
 				tokens.add(new Token(TokenName.UNEXPECTED_INPUT));
-				unexpected += 1;
-				break;
+				return tokens;
 			}
-		}
-		if (unexpected == -1){
-			tokens.add(new Token(TokenName.END_OF_INPUT));
 		}
 		return tokens;
 	}
