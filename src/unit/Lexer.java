@@ -14,7 +14,8 @@ public class Lexer {
 		while (!tokens.isEmpty())
 			System.out.println(tokens.remove());
 	}
-
+	//author -  J. R. Hauser
+	// I acknowledge the academic integrity policy and all code submitted is my own, or is copied directly from the resources provided
 	public Queue<Token> tokenize(String input) {
 		Queue<Token> tokens = new LinkedList<Token>();
 

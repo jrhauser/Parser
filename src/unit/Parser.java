@@ -7,42 +7,40 @@ import framework.TokenName;
 
 public class Parser {
 	public static void main(String[] args) {
-		String sentence = "let aaa = 1, let BBB = 0, eval aaa -> BBB <-> BBB' -> aaa'?";
+		String sentence = "let X = 0, let Y = 0, Let Z = 0, eval X -> Y -> Z?";
 		boolean value = new Parser().analyze(sentence);
 		System.out.println(value);
 	}
-
+	//author -  J. R. Hauser
+	// I acknowledge the academic integrity policy and all code submitted is my own, or is copied directly from the resources provided
 	Queue<Token> tokens;
 	HashMap<String, Boolean> lookupTable = new HashMap<String,Boolean>();
-
+	// Template method 
 	public boolean analyze(String input) {
+	// My own
 		tokens = new Lexer().tokenize(input);
 		boolean value = program();
 		expect(TokenName.END_OF_INPUT);
-		
 		return value;
 	}
-
+	//Copied from algebra example (https://ecampus.wvu.edu/webapps/blackboard/execute/blti/launchLink?course_id=_183807_1&content_id=_9970193_1)
 	private boolean accept(TokenName name) {
 		if (tokens.peek().name != name)
 			return false;
-		
 		tokens.remove();
 		return true;
 	}
-	
+	//copied from algebra example (https://ecampus.wvu.edu/webapps/blackboard/execute/blti/launchLink?course_id=_183807_1&content_id=_9970193_1)
 	private boolean peek(TokenName name ) {
 		return tokens.peek().name == name;
 	}
-
+	//copied from algebra example (https://ecampus.wvu.edu/webapps/blackboard/execute/blti/launchLink?course_id=_183807_1&content_id=_9970193_1)
 	private Object expect(TokenName name) {
 		if (tokens.peek().name != name)
 			throw new RuntimeException("Expected: " + name + 
 			" but found: " + tokens.peek().name);
-		
-			return tokens.remove().value;
+		return tokens.remove().value;
 	}
-	
 	private boolean program() {
 		boolean value = equivalance();
 		while (peek(TokenName.LET_KEYWORD) || peek(TokenName.EVAL_KEYWORD)) {
@@ -54,7 +52,6 @@ public class Parser {
 		}
 		return value;
 	}
-
 	private boolean evaluation() {
 		boolean value = equivalance();
 		expect(TokenName.QUESTION);
@@ -196,7 +193,7 @@ public class Parser {
 			accept(TokenName.IDENTIFIER);
 			return value;
 		}
-		return false;
+		return true;
 	}
 
 	private boolean literal() {
