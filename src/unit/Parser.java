@@ -7,7 +7,7 @@ import framework.TokenName;
 
 public class Parser {
 	public static void main(String[] args) {
-		String sentence = "let X = 0, let Y = 0, Let Z = 0, eval X -> Y -> Z?";
+		String sentence = "let P = 0, let MNO = 1, eval P -> MNO <-> P' v MNO?";
 		boolean value = new Parser().analyze(sentence);
 		System.out.println(value);
 	}
@@ -82,7 +82,7 @@ public class Parser {
 	private boolean equivalance() {
 		boolean value = implication();
 		if (peek(TokenName.DOUBLE_ARROW)) {
-			while (!(peek(TokenName.QUESTION) || peek(TokenName.CLOSE_PAREN))) {
+			while (!(peek(TokenName.QUESTION) || peek(TokenName.CLOSE_PAREN) || peek(TokenName.COMMA))) {
 				accept(TokenName.DOUBLE_ARROW);
 				if (peek(TokenName.OPEN_PAREN)) {
 					value = value == expression();
@@ -103,7 +103,7 @@ public class Parser {
 	private boolean implication() {
 		boolean value = disjunction();
 		if (peek(TokenName.ARROW)) {
-			while (!(peek(TokenName.QUESTION) || peek(TokenName.CLOSE_PAREN))) { 
+			while (!(peek(TokenName.QUESTION) || peek(TokenName.CLOSE_PAREN) || peek(TokenName.COMMA) )) { 
 				accept(TokenName.ARROW);
 				if (peek(TokenName.OPEN_PAREN)) {
 					value = !value || expression();
@@ -124,7 +124,7 @@ public class Parser {
 	private boolean disjunction() {
 		boolean value = conjunction();
 		if (peek(TokenName.VEE)) {
-			while (!(peek(TokenName.QUESTION) || peek(TokenName.CLOSE_PAREN))) {
+			while (!(peek(TokenName.QUESTION) || peek(TokenName.CLOSE_PAREN) || peek(TokenName.COMMA) )) {
 				accept(TokenName.VEE);
 				if (peek(TokenName.OPEN_PAREN)) {
 					value = value || expression();
@@ -145,7 +145,7 @@ public class Parser {
 	private boolean conjunction() {
 		boolean value = negation();
 		if (peek(TokenName.CARET)) {
-			while (!(peek(TokenName.QUESTION) || peek(TokenName.CLOSE_PAREN))) {
+			while (!(peek(TokenName.QUESTION) || peek(TokenName.CLOSE_PAREN) || peek(TokenName.COMMA))) {
 				accept(TokenName.CARET);
 				if (peek(TokenName.OPEN_PAREN)) {
 					value = value && expression();
@@ -193,6 +193,7 @@ public class Parser {
 			accept(TokenName.IDENTIFIER);
 			return value;
 		}
+		//should never be executed
 		return true;
 	}
 
