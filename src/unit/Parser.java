@@ -7,7 +7,7 @@ import framework.TokenName;
 
 public class Parser {
 	public static void main(String[] args) {
-		String sentence = "let P =1, let MNO = 0, eval P -> MNO <-> P' v MNO?";
+		String sentence = "let aaa = 1, let BBB = 0, eval aaa -> BBB <-> BBB' -> aaa'?";
 		boolean value = new Parser().analyze(sentence);
 		System.out.println(value);
 	}
@@ -15,11 +15,12 @@ public class Parser {
 	// I acknowledge the academic integrity policy and all code submitted is my own, or is copied directly from the resources provided
 	Queue<Token> tokens;
 	HashMap<String, Boolean> lookupTable = new HashMap<String,Boolean>();
+	private boolean value;
 	// Template method 
 	public boolean analyze(String input) {
 	// My own
 		tokens = new Lexer().tokenize(input);
-		boolean value = program();
+		value = program();
 		expect(TokenName.END_OF_INPUT);
 		return value;
 	}
@@ -42,7 +43,6 @@ public class Parser {
 		return tokens.remove().value;
 	}
 	private boolean program() {
-		boolean value = equivalance();
 		while (peek(TokenName.LET_KEYWORD) || peek(TokenName.EVAL_KEYWORD)) {
 			if (accept(TokenName.LET_KEYWORD)) {
 				assignment(lookupTable);
@@ -53,7 +53,7 @@ public class Parser {
 		return value;
 	}
 	private boolean evaluation() {
-		boolean value = equivalance();
+		value = equivalance();
 		expect(TokenName.QUESTION);
 		return value;
 	}
@@ -64,7 +64,7 @@ public class Parser {
 			expect(TokenName.IDENTIFIER);
 			expect(TokenName.EQUAL);
 			
-			boolean value = equivalance();
+			value = equivalance();
 		
 			if (lookup.get(identifier) != null) {
 					throw new RuntimeException("Variable already exists");
@@ -80,7 +80,7 @@ public class Parser {
 	}
 
 	private boolean equivalance() {
-		boolean value = implication();
+		value = implication();
 		if (peek(TokenName.DOUBLE_ARROW)) {
 			while (!(peek(TokenName.QUESTION) || peek(TokenName.CLOSE_PAREN) || peek(TokenName.COMMA))) {
 				accept(TokenName.DOUBLE_ARROW);
@@ -99,7 +99,7 @@ public class Parser {
 	}
 
 	private boolean implication() {
-		boolean value = disjunction();
+		 value = disjunction();
 		if (peek(TokenName.ARROW)) {
 			while (!(peek(TokenName.QUESTION) || peek(TokenName.CLOSE_PAREN) || peek(TokenName.COMMA) )) { 
 				accept(TokenName.ARROW);
@@ -108,7 +108,7 @@ public class Parser {
 				} else if (peek(TokenName.BOOL_LITERAL)){
 					value = !value | disjunction();
 				} else if (peek(TokenName.IDENTIFIER)) {
-					value = !value | disjunction();
+					value =  !value | disjunction();
 				} else {
 					equivalance();
 				}
@@ -118,7 +118,7 @@ public class Parser {
 	}
 	
 	private boolean disjunction() {
-		boolean value = conjunction();
+		 value = conjunction();
 		if (peek(TokenName.VEE)) {
 			while (!(peek(TokenName.QUESTION) || peek(TokenName.CLOSE_PAREN) || peek(TokenName.COMMA) )) {
 				accept(TokenName.VEE);
@@ -137,7 +137,7 @@ public class Parser {
 	}
 	
 	private boolean conjunction() {
-		boolean value = negation();
+		 value = negation();
 		if (peek(TokenName.CARET)) {
 			while (!(peek(TokenName.QUESTION) || peek(TokenName.CLOSE_PAREN) || peek(TokenName.COMMA))) {
 				accept(TokenName.CARET);
@@ -156,7 +156,7 @@ public class Parser {
 	}
 
 	private boolean negation() {
-		boolean value = expression();
+		value = expression();
 		if (peek(TokenName.APOSTROPHE)) {
 			accept(TokenName.APOSTROPHE);
 			value = !(value);
@@ -165,7 +165,6 @@ public class Parser {
 	}
 	
 	private boolean expression() {
-		boolean value;
 		if (peek(TokenName.OPEN_PAREN)) {
 			accept(TokenName.OPEN_PAREN);
 			value = equivalance();
@@ -178,19 +177,18 @@ public class Parser {
 
 	private boolean myBoolean() {
 		if (peek(TokenName.BOOL_LITERAL)) {
-			boolean value = literal();
+			value = literal();
 			return value;
 		} else if (peek(TokenName.IDENTIFIER)) {
-			boolean value = lookupTable.get((String) tokens.element().value);
+			value = lookupTable.get((String) tokens.element().value);
 			accept(TokenName.IDENTIFIER);
 			return value;
 		}
-		//should never be executed
-		return true;
+		return program();
 	}
 
 	private boolean literal() {
-		boolean value = (Boolean) tokens.element().value;
+		value = (Boolean) tokens.element().value;
 		accept(TokenName.BOOL_LITERAL);
 		return value;
 	}
