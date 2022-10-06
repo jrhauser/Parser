@@ -7,7 +7,7 @@ import framework.TokenName;
 
 public class Parser {
 	public static void main(String[] args) {
-		String sentence = "let P = 0, let MNO = 1, eval P -> MNO <-> P' v MNO?";
+		String sentence = "let P =1, let MNO = 0, eval P -> MNO <-> P' v MNO?";
 		boolean value = new Parser().analyze(sentence);
 		System.out.println(value);
 	}
@@ -86,12 +86,10 @@ public class Parser {
 				accept(TokenName.DOUBLE_ARROW);
 				if (peek(TokenName.OPEN_PAREN)) {
 					value = value == expression();
-				} else if (peek(TokenName.BOOL_LITERAL)){
-					boolean rightvalue = implication();
-					value = value == rightvalue;;	
+				} else if (peek(TokenName.BOOL_LITERAL)) {
+					value = value == implication();
 				} else if (peek(TokenName.IDENTIFIER)) {
-					boolean rightvalue = implication();
-					value = value == rightvalue;
+					value = value == implication();
 				} else {
 					throw new RuntimeException("AHHH");
 				}
@@ -106,13 +104,11 @@ public class Parser {
 			while (!(peek(TokenName.QUESTION) || peek(TokenName.CLOSE_PAREN) || peek(TokenName.COMMA) )) { 
 				accept(TokenName.ARROW);
 				if (peek(TokenName.OPEN_PAREN)) {
-					value = !value || expression();
+					value = !value | expression();
 				} else if (peek(TokenName.BOOL_LITERAL)){
-					boolean rightvalue = disjunction();
-					value = !value || rightvalue;;	
+					value = !value | disjunction();
 				} else if (peek(TokenName.IDENTIFIER)) {
-					boolean rightvalue = disjunction();
-					value = !value || rightvalue;
+					value = !value | disjunction();
 				} else {
 					equivalance();
 				}
@@ -127,13 +123,11 @@ public class Parser {
 			while (!(peek(TokenName.QUESTION) || peek(TokenName.CLOSE_PAREN) || peek(TokenName.COMMA) )) {
 				accept(TokenName.VEE);
 				if (peek(TokenName.OPEN_PAREN)) {
-					value = value || expression();
-				} else if (peek(TokenName.BOOL_LITERAL)){
-					boolean rightvalue = conjunction();
-					value = value || rightvalue;;	
+					value = value | expression();
+				} else if (peek(TokenName.BOOL_LITERAL)){ 
+					value = value | conjunction();
 				} else if (peek(TokenName.IDENTIFIER)) {
-					boolean rightvalue = conjunction();
-					value = value || rightvalue;
+					value = value | conjunction();
 				} else {
 					equivalance();
 				}
@@ -148,13 +142,11 @@ public class Parser {
 			while (!(peek(TokenName.QUESTION) || peek(TokenName.CLOSE_PAREN) || peek(TokenName.COMMA))) {
 				accept(TokenName.CARET);
 				if (peek(TokenName.OPEN_PAREN)) {
-					value = value && expression();
+					value = value & expression();
 				} else if (peek(TokenName.BOOL_LITERAL)){
-					boolean rightvalue = negation();
-					value = value && rightvalue;;	
+					value = value & negation();
 				} else if (peek(TokenName.IDENTIFIER)) {
-					boolean rightvalue = negation();
-					value = value && rightvalue;
+					value = value & negation();
 				} else {
 					throw new RuntimeException("EXPECTED SOMETHING AFTER THE ^");
 				}
